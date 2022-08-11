@@ -41,11 +41,12 @@ func RemoveUser(ids []int) int {
 func PageUser(pageNum, pageSize int, name string) ([]User, int64) {
 	var userList []User
 	var total int64
-	if name == "" {
-		err = DB.Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&userList).Count(&total).Error
-	} else {
-		err = DB.Limit(pageSize).Offset((pageNum-1)*pageSize).Where("nick_name like ?", "%"+name+"%").Find(&userList).Count(&total).Error
+
+	tx := DB.Limit(pageSize).Offset((pageNum - 1) * pageSize)
+	if name != "" {
+		tx.Where("nick_name like ?", "%"+name+"%")
 	}
+	err := tx.Find(&userList).Count(&total).Error
 	if err != nil {
 		return nil, total
 	}
