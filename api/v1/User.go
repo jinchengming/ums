@@ -70,7 +70,11 @@ func PageUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"message": result.GetErrMsg(code),
-		"data":    userList,
-		"total":   total,
+		"data": gin.H{
+			"list":     userList,
+			"pageNum":  pageNum,
+			"pageSize": pageSize,
+			"total":    total,
+		},
 	})
 }
